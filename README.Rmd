@@ -1,0 +1,60 @@
+---
+title: "Homework 2 (Week 3)"
+author: "Jake Fenley"
+date: "9/21/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(nycflights13)
+library(ggplot2)
+
+```
+
+### [Link to Github](https://github.com/jpFenley/stat433-hw2)
+
+### Part 1: Missing dep_times
+**How many flights have a missing dep_time? What other variables are missing? What might these rows represent?**
+
+We filter those flights that have a NA as dep_time. We can then count how many rows this is true for, as well as the proportion of rows this is the case for.
+
+
+```{r}
+filter(flights, is.na(dep_time))
+filter(flights, is.na(dep_time)) %>% nrow
+flights$dep_time %>% is.na %>% mean
+
+``` 
+
+It appears that when dep_time is missing so are dep_delay, arr_time, arr_delay, air_time. It is very likely that the missing values indicate a cancelled flight, as it would not have any time related info if that were the case. 
+
+
+### Part 2: Converting time to minutes
+
+**Currently dep_time and sched_dep_time are convenient to look at, but hard to compute with because they’re not really continuous numbers. Convert them to a more convenient representation of number of minutes since midnight.**
+
+We can add two new fields using mutate. dep_time_min and arr_time_min indicate the departure and arrival time in minutes since midnight, respectively. We can do this by getting the hours and minutes (using modulus and integer division) and converting this to minutes. We output a couple of the rows to verify it worked as expected.
+
+```{r}
+flights <- flights %>% mutate(
+  dep_time_min = (dep_time %/% 100) * 60 + (dep_time %% 100),
+  arr_time_min = (arr_time %/% 100) * 60 + (arr_time %% 100))
+            
+flights %>% select(dep_time, dep_time_min, arr_time, arr_time_min) %>% head
+
+``` 
+
+### Part 3: Look at the number of canceled flights per day. Is there a pattern? Is the proportion of canceled flights related to the average delay? Use multiple dyplr operations, all on one line, concluding with ggplot(aes(x= ,y=)) + geom_point()
+
+The following plots the cancellation rate and average delay time. Each point corresponds to a day of the year. There does appear to be a positive relationship between the cancellation rate and the average delay time. 
+
+```{r}
+flights %>% 
+  group_by(yday(time_hour)) %>% 
+  summarize(cancel = mean(is.na(dep_time)),
+            avg_delay = mean(dep_delay, na.rm = TRUE)) %>% 
+  ggplot(aes(x= avg_delay ,y=cancel)) + geom_point()
+
+```
