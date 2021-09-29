@@ -10,6 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(dplyr)
 library(nycflights13)
 library(ggplot2)
+library(lubridate)
 
 ```
 
@@ -40,9 +41,9 @@ We can add two new fields using mutate. dep_time_min and arr_time_min indicate t
 ```{r}
 flights <- flights %>% mutate(
   dep_time_min = (dep_time %/% 100) * 60 + (dep_time %% 100),
-  arr_time_min = (arr_time %/% 100) * 60 + (arr_time %% 100))
+  sched_dep_time_min = (sched_dep_time %/% 100) * 60 + (sched_dep_time %% 100))
             
-flights %>% select(dep_time, dep_time_min, arr_time, arr_time_min) %>% head
+flights %>% select(dep_time, dep_time_min, sched_dep_time, sched_dep_time_min) %>% head
 
 ``` 
 

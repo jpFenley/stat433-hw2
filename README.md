@@ -68,20 +68,20 @@ output a couple of the rows to verify it worked as expected.
 ``` r
 flights <- flights %>% mutate(
   dep_time_min = (dep_time %/% 100) * 60 + (dep_time %% 100),
-  arr_time_min = (arr_time %/% 100) * 60 + (arr_time %% 100))
+  sched_dep_time_min = (sched_dep_time %/% 100) * 60 + (sched_dep_time %% 100))
             
-flights %>% select(dep_time, dep_time_min, arr_time, arr_time_min) %>% head
+flights %>% select(dep_time, dep_time_min, sched_dep_time, sched_dep_time_min) %>% head
 ```
 
     ## # A tibble: 6 x 4
-    ##   dep_time dep_time_min arr_time arr_time_min
-    ##      <int>        <dbl>    <int>        <dbl>
-    ## 1      517          317      830          510
-    ## 2      533          333      850          530
-    ## 3      542          342      923          563
-    ## 4      544          344     1004          604
-    ## 5      554          354      812          492
-    ## 6      554          354      740          460
+    ##   dep_time dep_time_min sched_dep_time sched_dep_time_min
+    ##      <int>        <dbl>          <int>              <dbl>
+    ## 1      517          317            515                315
+    ## 2      533          333            529                329
+    ## 3      542          342            540                340
+    ## 4      544          344            545                345
+    ## 5      554          354            600                360
+    ## 6      554          354            558                358
 
 ### Part 3: Look at the number of canceled flights per day. Is there a pattern? Is the proportion of canceled flights related to the average delay? Use multiple dyplr operations, all on one line, concluding with ggplot(aes(x= ,y=)) + geom\_point()
 
